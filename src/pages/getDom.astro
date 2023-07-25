@@ -1,0 +1,60 @@
+---
+import Layout from "@/layouts/Layout.astro";
+const array1: Array<string> = ["1", "2", "3"];
+---
+
+<Layout title="DOM取得・操作">
+  <p>DOM取得・操作・追加 生きてるDOM</p>
+  <ul id="list1">
+    {
+      array1.map((item) => (
+        <li class="item1" data-number={item}>
+          {item}
+        </li>
+      ))
+    }
+    <button id="btn1">remove</button>
+  </ul>
+  <ul id="list2">
+    {
+      array1.map((item) => (
+        <li class="item2" data-number={item}>
+          {item}
+        </li>
+      ))
+    }
+    <button id="btn2">remove</button>
+  </ul>
+  <!-- <div id="app1"></div>
+  <div id="app2"></div>
+  <div id="app3"></div>
+  <div id="app4"></div>
+  <div id="app5"></div> -->
+</Layout>
+
+<script>
+  {// dom取得  HTMLCollectionとNodeList の違い
+
+// HTMLCollection
+ const items1 = document.getElementsByClassName('item1')
+ console.log(items1)
+ const btn1 = document.getElementById('btn1');
+ btn1?.addEventListener('click',()=>{
+  // 参照元が生きてるので全て消せる
+  items1[0].remove();
+  console.log(items1)
+ })
+
+
+//NodeList
+ const items2 = document.querySelectorAll('.item2');
+ console.log(items2)
+ const btn2 = document.getElementById('btn2');
+ btn2?.addEventListener('click',()=>{
+  // 参照元domが変わらないのではじめのものしか消せない
+  items2[0].remove();
+  console.log(items2)
+ })
+
+  }
+</script>

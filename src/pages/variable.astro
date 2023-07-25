@@ -1,0 +1,25 @@
+---
+import Layout from "@/layouts/Layout.astro";
+// type=moduleで呼び込まない場合
+const script = `
+<script src="./../variable.js"></script> 
+`;
+---
+
+<Layout title="DOM取得・操作" script={script}>
+  <div id="app"></div>
+  <p>変数</p>
+</Layout>
+
+<script>
+  console.log(window);
+  console.group("varの場合");
+  console.log(window.varValue1);
+  console.log(varValue2);
+  // console.log(varValue3)
+  // eventSample();
+  // console.log(varValue3)
+  console.groupEnd();
+
+  console.log(letValue1);
+</script>

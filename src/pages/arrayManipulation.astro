@@ -1,0 +1,205 @@
+---
+import Layout from "@/layouts/Layout.astro";
+---
+
+<Layout title="配列・オブジェクト操作">
+  <div id="app"></div>
+  <p>配列・オブジェクト操作</p>
+</Layout>
+
+<script>
+  // 配列操作
+  type BaseString = "a" | "b" | "c" | "d" | "e" | "f" | "x";
+  console.group("初期値");
+  const baseStrings: Array<BaseString> = ["a", "b", "c", "d", "e", "f", "x"];
+
+  const baseArray: Array<BaseString> = ["a", "b", "c", "d", "e", "f"];
+  console.log("baseArray");
+  console.log(baseArray);
+
+  const duplicationArray: Array<BaseString> = [...baseArray, "a", "c", "e"];
+  console.log("duplicationArray");
+  console.log(duplicationArray);
+
+  const sameArray: Array<BaseString> = ["a", "a", "a", "a", "a"];
+
+  const obj1: Record<string, BaseString | Array<BaseString>> = {
+    key1: "c",
+    key2: "a",
+    key3: "b",
+    key4: "e",
+    key5: "f",
+    key6: "a",
+    keyArray: baseArray,
+    keyDuplication: duplicationArray,
+  };
+
+  const arrayArray = [baseArray, duplicationArray, baseArray];
+  const arrayObj = [obj1, obj1, obj1];
+  console.log("arrayArray");
+  console.log(arrayArray);
+  console.log("arrayObj");
+  console.log(arrayObj);
+
+  console.log("obj1");
+  console.log(obj1);
+  console.table(obj1);
+  console.groupEnd();
+
+  // 配列 オブジェクトの長さ
+  {
+    console.group("配列 オブジェクトの長さ");
+    console.log("配列");
+    const arrayLength = duplicationArray.length;
+    console.log(arrayLength);
+    console.log("オブジェクトのkeyの長さ");
+    const objLength = Object.keys(obj1).length;
+    console.log(objLength);
+    console.log("Setオブジェクト");
+    const setArray = new Set(duplicationArray);
+    const setArrayLength = setArray.size;
+    console.log(setArrayLength);
+    console.groupEnd();
+  }
+
+  // 条件を満たす最初の要素を返す find
+  {
+    console.group("条件を満たす最初の要素を返す_find");
+    const findArray = baseArray.find((el) => el === "c");
+    console.log(findArray);
+    console.log("条件に合うものがない場合 undefined");
+    const noFindArray = baseArray.find((el) => el === "x");
+    console.log(noFindArray);
+    console.log("オブジェクトから探す");
+    const findObjKey = Object.keys(obj1).find((el) => obj1[el] === "a");
+    console.log(findObjKey);
+    console.groupEnd();
+  }
+
+  // 条件を満たす最初のindexを返す findIndex
+  {
+    console.group("条件を満たす最初の要素を返す_findIndex");
+    const findArray = baseArray.findIndex((el) => el === "c");
+    console.log(findArray);
+    console.log("条件に合うものがない場合 -1");
+    const noFindArray = baseArray.findIndex((el) => el === "x");
+    console.log(noFindArray);
+    console.log("オブジェクトから探す");
+    const findObjKey = Object.keys(obj1).findIndex((el) => obj1[el] === "a");
+    console.log(findObjKey);
+    console.groupEnd();
+  }
+
+  // 条件を満たす要素で新しい配列作成 fillter
+  {
+    console.group("条件を満たす要素で新しい配列作成_filter");
+    const newArray = duplicationArray.filter((el) => el === "c");
+    console.log(newArray);
+    console.log("条件に合うものがない場合 []");
+    const noArray = duplicationArray.filter((el) => el === "x");
+    console.log(noArray);
+    console.log("オブジェクトから探す");
+    const newObjKey = Object.keys(obj1).filter((el) => obj1[el] === "a");
+    console.log(newObjKey);
+    console.groupEnd();
+  }
+
+  // 条件を満たす要素が1個以上か判定 some
+  {
+    console.group("条件を満たす要素が1個以上か判定");
+    const detect = duplicationArray.some((v) => v === "a");
+    console.log(detect);
+    console.log("満たさない場合 false");
+    console.log(duplicationArray.some((v) => v === "x"));
+    console.log("オブジェクトの場合");
+    const detectObjKey = Object.keys(obj1).some((el) => obj1[el] === "a");
+    console.log(detectObjKey);
+    console.groupEnd();
+  }
+
+  // 全ての要素が条件を満たすか判定 every
+  {
+    console.group("全ての要素が条件を満たすか判定");
+    const detect = sameArray.every((v) => v === "a");
+    console.log(detect);
+    console.log("満たさない場合 false");
+    console.log(duplicationArray.every((v) => v === "x"));
+    console.log("オブジェクトの場合");
+    const detectObjKey = Object.keys(obj1).every((el) => obj1[el] === "a");
+    console.log(detectObjKey);
+    console.groupEnd();
+  }
+
+  // 指定した要素が含まれているか includes あまり使わない
+  {
+    console.group("指定した要素が含まれているか");
+    const detect = baseArray.includes("a");
+    console.log("includes / " + detect);
+    console.log("含まない場合 false");
+    console.log(duplicationArray.includes("x"));
+    console.log("オブジェクトの場合");
+    const detectObjKey = Object.keys(obj1).map((el) => obj1[el].includes("a"));
+    console.log(detectObjKey);
+    console.groupEnd();
+  }
+
+  // 値の書き換え
+  {
+    console.group("値の書き換え");
+    console.log("配列内の書き換え");
+    const changeIndex = 3;
+    const newValue = "x";
+    // 配列複製
+    const copyArray = Array.from(baseArray); // const copyArray = [...baseArray]
+    copyArray[0] = "x";
+    console.log(copyArray);
+
+    console.log("sliceを使うパターン");
+    const newArray = [
+      ...baseArray.slice(0, changeIndex),
+      newValue,
+      ...baseArray.slice(changeIndex + 1),
+    ];
+    console.log(newArray);
+
+    console.log("オブジェクト内の値を書き換え");
+    //オブジェクト複製
+    const copyObj = Object.assign({}, obj1);
+    copyObj.key1 = newValue;
+    /* オブジェクト内の配列の書き換え
+    copyObj.keyArray[0] = newValue ではない
+    */
+    const array = Array.isArray(copyObj.keyArray) && [...copyObj.keyArray];
+    copyObj.keyArray = array
+      ? [
+          ...array.slice(0, changeIndex),
+          newValue,
+          ...array.slice(changeIndex + 1),
+        ]
+      : [];
+    console.table(copyObj);
+    console.groupEnd();
+  }
+
+  // 多次元配列を1次元化
+  {
+    console.group("多次元配列を1次元化");
+    console.log("配列を1次元化");
+    const fArray = arrayArray.flat();
+    console.log(fArray);
+    console.log("オブジェクトを1次次元化");
+    const fObj = arrayObj.flatMap((el) => el.keyArray);
+    console.log(fObj);
+    console.groupEnd();
+  }
+
+  // 配列の比較
+  {
+    console.group("配列の比較");
+    const copyObj = Object.assign({}, obj1);
+    const newArray =
+      Array.isArray(copyObj.keyArray) &&
+      copyObj.keyArray.filter((el) => baseStrings.some((v) => v === el));
+    console.log(newArray);
+  }
+</script>

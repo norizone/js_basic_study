@@ -1,0 +1,124 @@
+---
+import Layout from "@/layouts/Layout.astro";
+const array1: Array<string> = ["1", "2", "3"];
+---
+
+<Layout title="DOM取得・操作">
+  <p>DOM操作・追加</p>
+  <ul id="list1" class="item1_wrap">
+    {
+      array1.map((item) => (
+        <li class="item1" data-number={item}>
+          {item}
+        </li>
+      ))
+    }
+  </ul>
+  <div id="app1"></div>
+  <div id="app2"></div>
+  <div id="app3"></div>
+  <div id="app4"></div>
+  <div id="app5"></div>
+</Layout>
+
+<script>
+  {
+    const listEls = document.querySelectorAll<HTMLElement>("li.item1");
+    listEls[1].style.setProperty("--item-color", "var(--bs-info)");
+    const firstListEl = document.querySelector<HTMLElement>("li.item1") ?? null;
+    firstListEl &&
+      firstListEl.style.setProperty("--item-color", "var(--bs-red)");
+    listEls.forEach((el) => {
+      if (el.dataset.number === "3") {
+        el.style.setProperty("--item-color", "var(--bs-gray)");
+      }
+    });
+  }
+
+  { // DOMを追加する
+    /* insertAdjacentHTML insertAdjacentText
+    'beforebegin': targetElement 自体の前。
+    'afterbegin': targetElement の直下、最初の子の前。
+    'beforeend': targetElement の直下、最後の子の後。
+    'afterend': targetElement 自体の後
+    */
+    console.log(document);
+    const app1: HTMLElement | null = document.getElementById("app1");
+    const app2: HTMLElement | null = document.getElementById("app2");
+
+    const eventButton1 = document.createElement("button");
+    const eventButton2 = document.createElement("button");
+
+    eventButton1.innerText = "eventButton1";
+    eventButton2.insertAdjacentText("afterbegin", "eventButton2");
+
+    const handlerClick = (target: HTMLButtonElement) => {
+      target.addEventListener("click", () => {
+        target.innerText = "clickedButton";
+        target.disabled = true;
+      });
+    };
+    handlerClick(eventButton1);
+    handlerClick(eventButton2);
+
+    app1?.appendChild(eventButton1);
+    app2?.insertAdjacentElement("afterbegin", eventButton2);
+
+    // appendChild は同期処理
+    const app3: HTMLElement | null = document.getElementById("app3");
+    const wrapEl = document.createElement('div');
+    const innerEl = `<button id="btn3">eventButton3</button>`;
+    wrapEl.insertAdjacentHTML('afterbegin',innerEl);
+    app3?.appendChild(wrapEl);
+    const btn3:HTMLButtonElement|null = document.querySelector('button#btn3')??null
+    btn3 && handlerClick(btn3)
+  }
+
+  { // 複数の要素をまとめて追加する createDocumentFragment
+    const app4: HTMLElement | null = document.getElementById("app4");
+    const items = ["a", "b", "c", "d", "e", "f"];
+    const fragment = document.createDocumentFragment();
+    items.map((item) => {
+      const itemEl = document.createElement("p");
+      itemEl.insertAdjacentText("afterbegin", item);
+      fragment.appendChild(itemEl);
+    });
+    app4?.appendChild(fragment);
+  }
+
+  { //cloneNode 
+    const list1 = document.getElementById('list1');
+    const cloneList1 = list1?.cloneNode(true)as HTMLElement
+    const app5 = document.getElementById('app5');
+    if(cloneList1&&app5){
+      // cloneしたものとIDがかぶるので削除する
+      cloneList1.id = '';
+      app5.appendChild(cloneList1)
+    }
+
+    // イベントはクローンされない
+    const btn3 = document.getElementById('btn3');
+    const cloneBtn3 = btn3?.cloneNode(true) as HTMLElement;
+    if(cloneBtn3&&app5){
+      cloneBtn3.id='';
+      app5.appendChild(cloneBtn3);
+    }
+  }
+</script>
+
+<style scoped>
+  * {
+    margin: 0;
+    padding: 0;
+  }
+  .item1 {
+    list-style: none;
+    color: var(--item-color, black);
+  }
+  #app1 {
+    background: var(--bs-red);
+  }
+  #app2 {
+    background: var(--bs-blue);
+  }
+</style>

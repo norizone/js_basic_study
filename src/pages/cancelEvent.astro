@@ -1,0 +1,93 @@
+---
+import Layout from "@/layouts/Layout.astro";
+---
+
+<Layout title="イベントキャンセル">
+  <div id="app"></div>
+  <p>イベントキャンセル</p>
+  <div id="b1Parent">
+    <a href="/" id="b1">イベントボタン</a>
+  </div>
+  <div>
+    <button type="button" id="b2">countUp:</button>
+  </div>
+</Layout>
+
+<script>
+/* eventキャンセル
+preventDefault デフォルトのイベントキャンセル
+stopPropagation イベントバブリングの停止
+stopImmediatePropagation 同じ要素の同じイベントタイプの以降イベンㇳキャンセル 
+removeEventListener 
+*/
+  {
+    const targetParent: HTMLDivElement | null =
+      document.querySelector("div#b1Parent") ?? null;
+    const target: HTMLAnchorElement | null =
+      document.querySelector("a#b1") ?? null;
+
+    targetParent?.addEventListener("click", (event: Event) => {
+      console.group("親イベント");
+      console.log(event.target);
+      console.groupEnd();
+    });
+
+    target?.addEventListener("click", (event: Event) => {
+      console.group("以前/子イベント");
+      console.log(event.target);
+      console.groupEnd();
+    });
+
+    target?.addEventListener("click", (event: Event) => {
+      // // デフォルトイベント停止
+      event.preventDefault();
+      // 親要素のイベントバブリング停止
+      event.stopPropagation();
+      // 同じ要素の同じイベントタイプの以降イベンㇳキャンセル
+      event.stopImmediatePropagation();
+    });
+
+    target?.addEventListener("click", (event: Event) => {
+      console.group("以降/子イベント");
+      console.log(event.target);
+      console.groupEnd();
+    });
+  }
+
+  {
+    // removeEventListener
+    const target: HTMLButtonElement | null =
+      document.querySelector("button#b2");
+    const inner = document.createElement("span");
+    target?.appendChild(inner);
+    let count = 0;
+    inner.innerText = count + "";
+
+    const onClickEvent = () => {
+      count++;
+      inner.innerText = count + "";
+    };
+
+    const handlerCountUp = () => {
+      if (count < 5) return;
+      target?.removeEventListener("click", onClickEvent);
+      target?.removeEventListener("click", handlerCountUp);
+      target?.style.setProperty("--bg-color", "var(--bs-red)");
+    };
+
+    target?.addEventListener("click", onClickEvent);
+    target?.addEventListener("click", handlerCountUp);
+  }
+</script>
+
+<style scoped>
+  #b1Parent {
+    background: var(--bs-green);
+  }
+  #b2 {
+    --bg-color: var(--bs-blue);
+    color: var(--bs-white);
+    margin-top: 3em;
+    background: var(--bg-color);
+  }
+</style>
